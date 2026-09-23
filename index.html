@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualisasi Topologi Jaringan</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Visualisasi Topologi Jaringan</h1>
+      <p>Monitoring perangkat dan koneksi internet sekolah</p>
+    </div>
+    <div class="clock" id="clock"></div>
+  </header>
+
+  <main>
+    <section class="stats">
+      <div class="card"><span>Perangkat</span><strong id="totalDevice">0</strong></div>
+      <div class="card"><span>Online</span><strong id="onlineDevice">0</strong></div>
+      <div class="card"><span>Offline</span><strong id="offlineDevice">0</strong></div>
+      <div class="card"><span>Koneksi</span><strong id="connectionCount">0</strong></div>
+    </section>
+
+    <section class="toolbar">
+      <div>
+        <button onclick="addDevice()">+ Tambah Perangkat</button>
+        <button class="secondary" onclick="resetTopology()">Reset Topologi</button>
+      </div>
+      <div class="legend">
+        <span><i class="dot online"></i> Online</span>
+        <span><i class="dot offline"></i> Offline</span>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="panel">
+        <h2>Topologi Jaringan</h2>
+        <div class="topology" id="topology"></div>
+      </div>
+
+      <aside class="panel side">
+        <h2>Daftar Perangkat</h2>
+        <div id="deviceList"></div>
+        <hr>
+        <h2>Informasi Koneksi Internet</h2>
+        <div class="internet-status">
+          <div class="internet-icon">🌐</div>
+          <div>
+            <strong id="internetStatus">ONLINE</strong>
+            <p id="internetText">Koneksi internet terdeteksi aktif.</p>
+          </div>
+        </div>
+        <button class="ping" onclick="checkInternet()">Cek Koneksi</button>
+        <div id="pingResult" class="ping-result"></div>
+      </aside>
+    </section>
+  </main>
+
+  <footer>
+    Aplikasi Visualisasi Topologi Jaringan &copy; 2026
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
