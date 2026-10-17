@@ -1,67 +1,47 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visualisasi Topologi Jaringan</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1220">
+<title>NetVision — Network Monitoring</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <div>
-      <h1>Visualisasi Topologi Jaringan</h1>
-      <p>Monitoring perangkat dan koneksi internet sekolah</p>
-    </div>
-    <div class="clock" id="clock"></div>
-  </header>
-
-  <main>
-    <section class="stats">
-      <div class="card"><span>Perangkat</span><strong id="totalDevice">0</strong></div>
-      <div class="card"><span>Online</span><strong id="onlineDevice">0</strong></div>
-      <div class="card"><span>Offline</span><strong id="offlineDevice">0</strong></div>
-      <div class="card"><span>Koneksi</span><strong id="connectionCount">0</strong></div>
-    </section>
-
-    <section class="toolbar">
-      <div>
-        <button onclick="addDevice()">+ Tambah Perangkat</button>
-        <button class="secondary" onclick="resetTopology()">Reset Topologi</button>
-      </div>
-      <div class="legend">
-        <span><i class="dot online"></i> Online</span>
-        <span><i class="dot offline"></i> Offline</span>
-      </div>
-    </section>
-
-    <section class="workspace">
-      <div class="panel">
-        <h2>Topologi Jaringan</h2>
-        <div class="topology" id="topology"></div>
-      </div>
-
-      <aside class="panel side">
-        <h2>Daftar Perangkat</h2>
-        <div id="deviceList"></div>
-        <hr>
-        <h2>Informasi Koneksi Internet</h2>
-        <div class="internet-status">
-          <div class="internet-icon">🌐</div>
-          <div>
-            <strong id="internetStatus">ONLINE</strong>
-            <p id="internetText">Koneksi internet terdeteksi aktif.</p>
-          </div>
-        </div>
-        <button class="ping" onclick="checkInternet()">Cek Koneksi</button>
-        <div id="pingResult" class="ping-result"></div>
-      </aside>
-    </section>
-  </main>
-
-  <footer>
-    Aplikasi Visualisasi Topologi Jaringan &copy; 2026
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
+<div class="app">
+<header class="header">
+ <div class="brand"><div class="logo">⌘</div><div><div class="eyebrow">Network Operations Center</div><h1>NetVision <span style="color:#72b8ff">Monitor</span></h1><p class="subtitle">Dashboard visualisasi topologi dan status jaringan</p></div></div>
+ <div class="headright"><div class="live"><i class="pulse"></i> SIMULASI AKTIF</div><div class="clock"><strong id="clock">--:--:--</strong><span id="date">Memuat tanggal...</span></div></div>
+</header>
+<section class="stats">
+ <div class="stat" style="--glow:#2787f5"><div class="stathead"><span>Total Perangkat</span><span class="staticon">▦</span></div><div class="statnum" id="totalDevice">0</div><div class="statfoot">Perangkat terdaftar</div></div>
+ <div class="stat" style="--glow:#35d49a"><div class="stathead"><span>Online</span><span class="staticon">↗</span></div><div class="statnum green" id="onlineDevice">0</div><div class="statfoot">Beroperasi normal</div></div>
+ <div class="stat" style="--glow:#ff6b7b"><div class="stathead"><span>Offline</span><span class="staticon">↘</span></div><div class="statnum red" id="offlineDevice">0</div><div class="statfoot">Perlu pemeriksaan</div></div>
+ <div class="stat" style="--glow:#f5c451"><div class="stathead"><span>Koneksi</span><span class="staticon">⌁</span></div><div class="statnum" id="connectionCount">0</div><div class="statfoot">Relasi ant perangkat</div></div>
+</section>
+<div class="toolbar"><div class="actions"><button class="primary" onclick="openModal()">＋ Tambah Perangkat</button><button onclick="checkAll()">⟳ Periksa Status</button><button onclick="exportCSV()">⇩ Ekspor CSV</button><button class="danger" onclick="resetTopology()">Reset Data</button></div><div class="searchbox"><input id="searchInput" placeholder="Cari nama atau IP..." oninput="renderDevices()"><select id="filterStatus" onchange="renderDevices()"><option value="all">Semua status</option><option value="online">Online</option><option value="offline">Offline</option></select><select id="filterType" onchange="renderDevices()"><option value="all">Semua tipe</option><option>Router</option><option>Switch</option><option>Access Point</option><option>Server</option><option>PC</option><option>Laptop</option><option>Printer</option></select></div></div>
+<section class="workspace">
+ <div class="panel"><div class="panelhead"><div><h2>Topologi Jaringan</h2><p class="paneldesc">Pilih perangkat untuk melihat informasi atau mengubah status simulasi.</p></div><span class="tag">LIVE VIEW</span></div>
+ <div class="topology" id="topology"></div><div class="topolegend"><span><i class="dot"></i> Koneksi aktif</span><span><i class="dot red"></i> Koneksi terganggu</span><span>↳ Klik perangkat untuk detail</span></div></div>
+ <div class="sidegrid">
+  <div class="panel"><div class="panelhead"><div><h2>Status Internet</h2><p class="paneldesc">Pemeriksaan konektivitas simulasi</p></div><span class="tag">WAN</span></div><div class="internetbox" id="internetBox"><div class="globe">🌐</div><div><strong id="internetStatus">ONLINE</strong><p id="internetText">Koneksi terpantau normal.</p></div><span class="statuslabel" id="internetBadge">AKTIF</span></div><button class="primary wide" onclick="checkInternet()">▶ Jalankan tes koneksi</button><div class="result" id="pingResult">Belum ada pemeriksaan terbaru.</div><div class="miniinfo"><div><span>Latensi simulasi</span><strong id="latency">24 ms</strong></div><div><span>Uptime simulasi</span><strong id="uptime">99.9%</strong></div></div></div>
+  <div class="panel"><div class="panelhead"><div><h2>Ringkasan Jaringan</h2><p class="paneldesc">Informasi status perangkat</p></div></div><div class="miniinfo"><div><span>Persentase online</span><strong id="onlineRate">—</strong></div><div><span>Alert aktif</span><strong id="alertCount" class="yellow">0</strong></div></div><p class="paneldesc" style="margin-top:14px">Tips: pilih perangkat dari tabel untuk mengedit detail, atau gunakan tombol status untuk simulasi gangguan.</p></div>
+ </div>
+</section>
+<section class="panel" style="margin-top:18px"><div class="panelhead"><div><h2>Inventaris Perangkat</h2><p class="paneldesc">Kelola perangkat dan pantau status masing-masing.</p></div><span class="tag" id="deviceCountLabel">0 perangkat</span></div><div class="tablewrap"><table class="device-table"><thead><tr><th>Perangkat</th><th>Tipe</th><th>Alamat IP</th><th>Status</th><th>Pemeriksaan</th><th>Aksi</th></tr></thead><tbody id="deviceTable"></tbody></table><div id="emptyState" class="empty" style="display:none"><strong>Tidak ada perangkat ditemukan</strong>Coba ubah kata kunci atau filter.</div></div></section>
+<section class="bottomgrid">
+ <div class="panel"><div class="panelhead"><div><h2>Riwayat Pemeriksaan</h2><p class="paneldesc">Grafik latensi simulasi (ms)</p></div><span class="tag">LAST 12 CHECKS</span></div><div class="chart" id="latencyChart"></div><div class="chartlabels"><span>12 pemeriksaan lalu</span><span>Sekarang</span></div></div>
+ <div class="panel"><div class="panelhead"><div><h2>Aktivitas Terbaru</h2><p class="paneldesc">Catatan perubahan status dan tindakan</p></div><button class="small" onclick="clearLogs()">Bersihkan</button></div><div class="logs" id="activityLog"></div></div>
+</section>
+<footer><span>© 2026 NetVision Monitor · Prototype Visualisasi Topologi Jaringan</span><span>Catatan: status dan ping pada versi ini merupakan simulasi browser.</span></footer>
+</div>
+<div class="modalback" id="modalBack" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modalhead"><h2 id="modalTitle">Tambah Perangkat</h2><button class="xbtn" onclick="closeModal()">×</button></div><form id="deviceForm" onsubmit="saveDevice(event)"><input type="hidden" id="deviceId"><div class="formgrid">
+ <div class="field full"><label for="deviceName">Nama perangkat</label><input id="deviceName" required maxlength="50" placeholder="Contoh: Router Utama"></div>
+ <div class="field"><label for="deviceType">Jenis perangkat</label><select id="deviceType" required><option>Router</option><option>Switch</option><option>Access Point</option><option>Server</option><option>PC</option><option>Laptop</option><option>Printer</option></select></div>
+ <div class="field"><label for="deviceIP">Alamat IP</label><input id="deviceIP" required placeholder="192.168.1.1" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"></div>
+ <div class="field"><label for="deviceStatus">Status awal</label><select id="deviceStatus"><option value="online">Online</option><option value="offline">Offline</option></select></div>
+ <div class="field"><label for="deviceParent">Terhubung ke</label><select id="deviceParent"><option value="">Tidak ditentukan</option></select></div>
+ </div><div class="modalfoot"><button type="button" onclick="closeModal()">Batal</button><button class="primary" type="submit">Simpan Perangkat</button></div></form></div></div>
+<div class="toast" id="toast"></div>
+<script src="script.js" defer></script>
+</body></html>

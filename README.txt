@@ -1,21 +1,23 @@
-# Aplikasi Visualisasi Topologi Jaringan dan Koneksi Internet
+# NetVision Monitor — Visualisasi Topologi Jaringan
 
-Aplikasi web sederhana untuk penelitian "Pembuatan Aplikasi Visualisasi Topologi Jaringan dan Koneksi Internet".
+Dashboard front-end untuk simulasi pemantauan jaringan lokal.
 
-## Cara menjalankan
-1. Ekstrak folder aplikasi.
-2. Buka file `index.html` menggunakan Google Chrome/Microsoft Edge.
-3. Aplikasi langsung dapat digunakan tanpa instalasi server.
+## Menjalankan aplikasi
+1. Ekstrak seluruh isi ZIP ke satu folder.
+2. Buka `index.html` menggunakan Google Chrome, Microsoft Edge, atau Firefox.
+3. Pastikan `style.css` dan `script.js` tetap berada di folder yang sama dengan `index.html`.
+
+Aplikasi tidak memerlukan instalasi server atau dependensi eksternal.
 
 ## Fitur
-- Visualisasi Internet → Router → Switch → Access Point/PC
-- Status perangkat Online/Offline
-- Daftar perangkat dan IP Address
-- Penghitungan jumlah perangkat dan koneksi
-- Tambah perangkat
-- Reset topologi
-- Simulasi pengecekan koneksi internet
-- Data tersimpan di Local Storage browser
+- Ringkasan jumlah perangkat dan status koneksi.
+- Visualisasi topologi jaringan.
+- Tambah, edit, hapus, cari, dan filter perangkat.
+- Simulasi pemeriksaan konektivitas dan latensi.
+- Riwayat aktivitas dan grafik latensi.
+- Ekspor inventaris perangkat ke CSV.
+- Penyimpanan data di `localStorage` browser.
+- Tampilan responsif untuk desktop, tablet, dan ponsel.
 
-## Catatan penelitian
-Versi ini adalah prototype/versi awal. Untuk monitoring jaringan secara nyata, tahap berikutnya dapat ditambahkan backend yang melakukan ping/SNMP/API ke perangkat jaringan.
+## Catatan
+Status perangkat, pemeriksaan internet, ping, latensi, dan uptime pada aplikasi ini adalah **simulasi di browser**, bukan pemantauan jaringan sungguhan. Data tersimpan secara lokal pada browser/perangkat yang digunakan.
