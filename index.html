@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1220">
+<title>NetVision | Network Operations Center</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <img src="assets/LOGO-KP-KAWIS.jpeg" alt="Logo PKBM KAWIS">
+    <div><b>NET<span>VISION</span></b><small>PKBM KAWIS · NOC</small></div>
+  </div>
+  <div class="nav-caption">WORKSPACE</div>
+  <nav>
+    <button class="nav active" data-page="dashboard"><i>▦</i>Dashboard</button>
+    <button class="nav" data-page="topology"><i>⌘</i>Topologi Jaringan</button>
+    <button class="nav" data-page="devices"><i>▤</i>Inventaris Perangkat</button>
+    <button class="nav" data-page="monitoring"><i>⌁</i>Monitoring Koneksi</button>
+    <button class="nav" data-page="alerts"><i>⚑</i>Alert & Gangguan <em id="navAlert">0</em></button>
+    <button class="nav" data-page="reports"><i>▥</i>Laporan</button>
+  </nav>
+  <div class="nav-caption">SYSTEM</div>
+  <nav><button class="nav" data-page="settings"><i>⚙</i>Pengaturan</button></nav>
+  <div class="sidebar-bottom"><span class="pulse"></span><div><b>Mode demo aktif</b><small>Data tersimpan di browser</small></div></div>
+</aside>
+<main class="main">
+<header class="topbar">
+  <button class="mobile-menu" id="menuBtn">☰</button>
+  <div><div class="crumb">PKBM KAWIS <span>/</span> <b id="crumb">Dashboard</b></div><h1 id="pageTitle">Dashboard Overview</h1></div>
+  <div class="top-actions"><span class="system-state"><i class="pulse"></i> SYSTEM ONLINE</span><div class="clock"><b id="clock">--:--:--</b><small id="date">Memuat tanggal...</small></div></div>
+</header>
+<div class="content">
+<section class="page active" id="page-dashboard">
+  <div class="welcome"><div><span class="eyebrow">NETWORK OPERATIONS CENTER</span><h2>Selamat datang di NetVision</h2><p>Pantau kondisi infrastruktur jaringan PKBM KAWIS dari satu dashboard.</p></div><div class="welcome-actions"><button class="btn ghost" onclick="runCheck()">↻ Periksa jaringan</button><button class="btn primary" onclick="openDeviceModal()">＋ Tambah perangkat</button></div></div>
+  <div class="notice"><b>ⓘ Mode demonstrasi:</b> data koneksi dan hasil pemeriksaan pada versi ini merupakan simulasi lokal, bukan hasil ping perangkat jaringan sungguhan.</div>
+  <div class="stats">
+    <article class="stat"><div class="stat-top"><span>Total perangkat</span><i>▤</i></div><strong id="total">0</strong><small>Perangkat terdaftar</small></article>
+    <article class="stat"><div class="stat-top"><span>Perangkat online</span><i class="green">↗</i></div><strong class="green" id="online">0</strong><small id="onlinePct">0% dari total perangkat</small></article>
+    <article class="stat"><div class="stat-top"><span>Perangkat offline</span><i class="red">↘</i></div><strong class="red" id="offline">0</strong><small>Perlu pemeriksaan</small></article>
+    <article class="stat"><div class="stat-top"><span>Uptime simulasi</span><i class="yellow">◷</i></div><strong id="uptime">99.9%</strong><small>Estimasi demo</small></article>
+  </div>
+  <div class="grid-two">
+    <article class="panel"><div class="panel-head"><div><h3>Ringkasan topologi</h3><p>Gambaran koneksi antarperangkat</p></div><button class="text-btn" onclick="navigate('topology')">Lihat topologi →</button></div><div id="miniTopology" class="mini-topology"></div></article>
+    <article class="panel"><div class="panel-head"><div><h3>Kualitas koneksi</h3><p>Riwayat latency simulasi (ms)</p></div><span class="chip blue">12 pemeriksaan</span></div><div class="metric-row"><div><small>Latency terakhir</small><b id="lastLatency">24 ms</b></div><div><small>Packet loss demo</small><b id="packetLoss">0%</b></div></div><div id="latencyChart" class="chart"></div><div class="chart-foot"><span>12 pemeriksaan lalu</span><span>Sekarang</span></div></article>
+  </div>
+  <div class="grid-two lower">
+    <article class="panel"><div class="panel-head"><div><h3>Perangkat terbaru</h3><p>Status perangkat jaringan</p></div><button class="text-btn" onclick="navigate('devices')">Lihat semua →</button></div><div class="table-wrap"><table><thead><tr><th>Perangkat</th><th>IP Address</th><th>Status</th></tr></thead><tbody id="recentDevices"></tbody></table></div></article>
+    <article class="panel"><div class="panel-head"><div><h3>Aktivitas terbaru</h3><p>Log perubahan sistem</p></div><button class="text-btn" onclick="navigate('alerts')">Lihat log →</button></div><div id="recentLogs" class="activity-list"></div></article>
+  </div>
+</section>
+<section class="page" id="page-topology">
+  <div class="page-intro"><div><h2>Visualisasi Topologi Jaringan</h2><p>Pilih node untuk melihat detail perangkat. Hubungan perangkat dapat diatur melalui form inventaris.</p></div><button class="btn primary" onclick="navigate('devices')">Kelola perangkat</button></div>
+  <div class="panel"><div class="topology-toolbar"><span class="chip green">● Online</span><span class="chip red">● Offline / terdampak</span><span class="muted">Klik perangkat untuk detail</span></div><div id="fullTopology" class="full-topology"></div></div>
+</section>
+<section class="page" id="page-devices">
+  <div class="page-intro"><div><h2>Inventaris Perangkat</h2><p>Kelola aset jaringan, alamat IP, lokasi, dan hubungan perangkat.</p></div><button class="btn primary" onclick="openDeviceModal()">＋ Tambah perangkat</button></div>
+  <div class="panel"><div class="filters"><input id="deviceSearch" placeholder="Cari nama, IP, atau lokasi..." oninput="renderDevices()"><select id="statusFilter" onchange="renderDevices()"><option value="all">Semua status</option><option value="online">Online</option><option value="offline">Offline</option></select><select id="typeFilter" onchange="renderDevices()"><option value="all">Semua tipe</option><option>Router</option><option>Switch</option><option>Access Point</option><option>Server</option><option>PC</option><option>Laptop</option><option>Printer</option></select><button class="btn ghost" onclick="exportCSV()">⇩ Ekspor CSV</button></div><div class="table-wrap"><table><thead><tr><th>Perangkat</th><th>Tipe</th><th>IP Address</th><th>Lokasi</th><th>Status</th><th>Terhubung ke</th><th>Aksi</th></tr></thead><tbody id="deviceRows"></tbody></table><div id="deviceEmpty" class="empty" hidden>Tidak ada perangkat yang cocok.</div></div></div>
+</section>
+<section class="page" id="page-monitoring">
+  <div class="page-intro"><div><h2>Monitoring Koneksi</h2><p>Simulasi pemeriksaan latency, packet loss, dan ketersediaan jaringan.</p></div><button class="btn primary" onclick="runCheck()">▶ Jalankan pemeriksaan</button></div>
+  <div class="notice"><b>Perhatian:</b> browser tidak dapat melakukan ICMP ping ke jaringan lokal secara langsung. Untuk monitoring real-time diperlukan backend/agent di jaringan sekolah.</div>
+  <div class="stats three"><article class="stat"><div class="stat-top"><span>Latency</span><i>⌁</i></div><strong id="monLatency">24 ms</strong><small>Response time simulasi</small></article><article class="stat"><div class="stat-top"><span>Packet loss</span><i class="yellow">◌</i></div><strong id="monLoss">0%</strong><small>Paket gagal simulasi</small></article><article class="stat"><div class="stat-top"><span>Status gateway</span><i class="green">◎</i></div><strong class="green" id="gatewayState">ONLINE</strong><small>Router utama</small></article></div>
+  <article class="panel"><div class="panel-head"><div><h3>Grafik latency</h3><p>12 hasil pemeriksaan terakhir</p></div><span class="chip blue">LATENCY / MS</span></div><div id="monitorChart" class="chart tall"></div><div class="chart-foot"><span>Riwayat awal</span><span>Terbaru</span></div></article>
+  <article class="panel section-gap"><div class="panel-head"><div><h3>Riwayat pemeriksaan</h3><p>Catatan hasil tes koneksi</p></div></div><div class="table-wrap"><table><thead><tr><th>Waktu</th><th>Latency</th><th>Packet loss</th><th>Hasil</th></tr></thead><tbody id="checkRows"></tbody></table></div></article>
+</section>
+<section class="page" id="page-alerts">
+  <div class="page-intro"><div><h2>Alert & Aktivitas</h2><p>Daftar perangkat yang membutuhkan perhatian dan riwayat tindakan administrator.</p></div><button class="btn ghost" onclick="clearLogs()">Bersihkan log</button></div>
+  <div class="grid-two"><article class="panel"><div class="panel-head"><div><h3>Alert perangkat</h3><p>Status offline berdasarkan data demo</p></div><span class="chip red" id="alertChip">0 alert</span></div><div id="alertList" class="activity-list"></div></article><article class="panel"><div class="panel-head"><div><h3>Log aktivitas</h3><p>Aktivitas terbaru pada dashboard</p></div></div><div id="allLogs" class="activity-list scroll-list"></div></article></div>
+</section>
+<section class="page" id="page-reports">
+  <div class="page-intro"><div><h2>Laporan Jaringan</h2><p>Ringkasan inventaris dan kondisi jaringan untuk dokumentasi.</p></div><div><button class="btn ghost" onclick="exportCSV()">⇩ CSV</button> <button class="btn primary" onclick="printReport()">Cetak / PDF</button></div></div>
+  <div class="stats"><article class="stat"><div class="stat-top"><span>Total aset</span><i>▤</i></div><strong id="repTotal">0</strong><small>Inventaris perangkat</small></article><article class="stat"><div class="stat-top"><span>Online</span><i class="green">↗</i></div><strong class="green" id="repOnline">0</strong><small>Beroperasi</small></article><article class="stat"><div class="stat-top"><span>Offline</span><i class="red">↘</i></div><strong class="red" id="repOffline">0</strong><small>Perlu ditindaklanjuti</small></article><article class="stat"><div class="stat-top"><span>Relasi koneksi</span><i>⌘</i></div><strong id="repLinks">0</strong><small>Hubungan antar node</small></article></div>
+  <article class="panel"><div class="panel-head"><div><h3>Detail inventaris</h3><p>Data yang digunakan pada laporan saat ini</p></div><span class="chip blue" id="reportDate"></span></div><div class="table-wrap"><table><thead><tr><th>Nama</th><th>Tipe</th><th>IP</th><th>Lokasi</th><th>Status</th></tr></thead><tbody id="reportRows"></tbody></table></div></article>
+</section>
+<section class="page" id="page-settings">
+  <div class="page-intro"><div><h2>Pengaturan Sistem</h2><p>Konfigurasi tampilan dan pengelolaan data demonstrasi.</p></div></div>
+  <div class="grid-two"><article class="panel"><h3>Informasi aplikasi</h3><div class="settings-row"><span>Nama aplikasi</span><b>NetVision Monitor</b></div><div class="settings-row"><span>Instansi</span><b>PKBM KAWIS</b></div><div class="settings-row"><span>Versi</span><b>2.0 Demo</b></div><div class="settings-row"><span>Penyimpanan</span><b>Browser localStorage</b></div><div class="settings-row"><span>Mode monitoring</span><b class="yellow">Simulasi</b></div></article><article class="panel"><h3>Pengelolaan data</h3><p class="muted">Data perangkat dan log disimpan pada browser yang sedang digunakan. Hapus data hanya jika ingin mengembalikan kondisi awal.</p><button class="btn ghost full-btn" onclick="backupJSON()">⇩ Unduh backup JSON</button><button class="btn danger full-btn" onclick="resetData()">Reset seluruh data demo</button></article></div>
+</section>
+</div>
+</main>
+</div>
+<div class="modal-back" id="modalBack"><div class="modal"><div class="modal-head"><div><h3 id="modalTitle">Tambah perangkat</h3><p>Lengkapi informasi perangkat jaringan.</p></div><button class="close" onclick="closeModal()">×</button></div><form id="deviceForm"><input type="hidden" id="editId"><div class="form-grid">
+<label>Nama perangkat<input id="fName" required maxlength="60" placeholder="Contoh: Router Utama"></label>
+<label>Jenis perangkat<select id="fType"><option>Router</option><option>Switch</option><option>Access Point</option><option>Server</option><option>PC</option><option>Laptop</option><option>Printer</option></select></label>
+<label>Alamat IPv4<input id="fIP" required placeholder="192.168.1.1" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$"></label>
+<label>Lokasi<input id="fLocation" placeholder="Ruang Tata Usaha"></label>
+<label>Status<select id="fStatus"><option value="online">Online</option><option value="offline">Offline</option></select></label>
+<label>Terhubung ke<select id="fParent"><option value="">Tidak ditentukan</option></select></label>
+<label class="full">Catatan<textarea id="fNote" rows="2" placeholder="Keterangan perangkat (opsional)"></textarea></label>
+</div><div class="modal-actions"><button type="button" class="btn ghost" onclick="closeModal()">Batal</button><button type="submit" class="btn primary">Simpan perangkat</button></div></form></div></div>
+<div id="toast" class="toast"></div>
+<script src="script.js"></script>
+</body></html>
